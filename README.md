@@ -8,19 +8,39 @@ Once Spamcop processes the request, it will send a notification to the registere
 
 ## Usage
 
-Sign up to https://www.spamcop.net/
-
-Find your Spamcop submit address, it will be something like:
+1. Sign up to https://www.spamcop.net/ and get an Spamcop submit address, it will be something like:
 `submit.DXtEWmmGt2VLK4lw@spam.spamcop.net`
 
-Copy `.env.example` to `.env` and:
+2. `composer install eugenevdm/spamforce`
 
-* Add your Spamcop submit address to the .env file.
-* Add your administrator email address to the .env file.
+3. Copy `.env.example` to `.env` and complete these values:
 
-Create a cron job to run Spamforce every 5 minutes:
+> SPAMCOP_SUBMIT=
+SPAMFORCE_CC=
+SPAMFORCE_FROM=
 
-*/5 * * * *     /usr/bin/php /root/spamforce.php
+* Add your Spamcop submit email address
+* If you want to be copied on submissions, add your administrator email address to `SPAMFORCE_CC`
+* Put in some kind of legitimate `FROM:` address. It will never be used but it's good email etiquette
+
+4. Create a new file, say `fightspam.php`:
+
+```php
+<?php
+
+require_once 'vendor/autoload.php';
+
+Use eugenevdm/SpamForce;
+
+eugenevdm\SpamForce::run();
+
+
+```
+ 
+
+4. Create a cron job to run Spamforce every 5 minutes:
+
+`*/5 * * * *     /usr/bin/php /root/fightspam.php`
 
 ## Caveats
 

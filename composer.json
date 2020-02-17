@@ -10,6 +10,9 @@
     }
   ],
   "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {"eugenevdm\\Exim\\": "src/"}
+  },
   "require": {
     "vlucas/phpdotenv": "^4.1"
   }
