@@ -22,7 +22,7 @@ SPAMFORCE_FROM=
 ```
 
 * Add your Spamcop submit email address
-* If you want to be copied on submissions, add your administrator email address to `SPAMFORCE_CC`
+* If you want to be copied on submissions, add an administrator email address to `SPAMFORCE_CC`
 * Put in some kind of legitimate `FROM:` address. It will never be used but it's good email etiquette
 
 D. Create a new file, say `fightspam.php`:
@@ -50,6 +50,14 @@ To check:
 `php -i | grep disabled`
 
 Then modify `php.ini` if it's disabled. Please note this might constitute a security risk.
+
+## Inspiration
+
+I am a network administrator at Vander Host. Many of our clients who runs smaller businesses choose not to use the domain they have registered on our system, but rather to forward all email to upstreams such as Google and Apple. However, both Google and Apple block these messages if they contain suspect content.
+
+At that point the messages are stuck in the Exim queue.
+
+If you don't punish the spammers they will keep on coming back. This utility can be used to stabilize a severely affected system and bring the problem back down to a manageable level.
 
 ## Support
 
