@@ -83,4 +83,5 @@ class Spammer
     public $to;
     public $date;
     public $status;
+    public $message;
 }
