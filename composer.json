@@ -1,0 +1,19 @@
+{
+  "name": "eugenevdm/spamforce",
+  "description": "Software for Exim to assist with automated submissions to Spamcop",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Eugene van der Merwe",
+      "email": "eugene@vander.host"
+    }
+  ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {"eugenevdm\\Exim\\": "src/"}
+  },
+  "require": {
+    "vlucas/phpdotenv": "^4.1"
+  }
+}
