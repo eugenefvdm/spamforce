@@ -2,16 +2,18 @@
 
 namespace eugenevdm\Exim;
 
-class SpamForce {
+class SpamForce
+{
 
-    public static function run() {
+    public static function run()
+    {
         // Get a list of all messages in the Exim queue
         $list    = "/usr/sbin/exim -bp";
         $subject = shell_exec("$list");
         $pattern = "/.\s+.+\s(.+)\s</";
         preg_match_all($pattern, $subject, $matches);
 
-        echo "There are " . count($matches[1]) . " messages in the queue.\n";
+        $report = "There are " . count($matches[1]) . " messages in the queue.\n";
 
         // Loop through all messages and obtain the body -Mvb (b = body)
         foreach ($matches[1] as $match) {
@@ -21,10 +23,10 @@ class SpamForce {
             if ($result == true) {
                 $delete = "/usr/sbin/exim -Mrm $match";
                 shell_exec($delete);
-                echo "Message $match was reported and deleted.\n";
+                $report .= "Message $match was reported and deleted.\n";
             }
         }
-
+        return ($report);
     }
 
     static function checkForSpam($message, $match)
@@ -32,12 +34,12 @@ class SpamForce {
         $spam_notice = "has identified this incoming email as possible spam.";
         $pos         = strpos($message, $spam_notice);
         if ($pos === false) return false;
-        $message = self::cut($message);
-        if (!$message) {
+        $spammer = self::cut($message);
+        if (!$spammer->$message) {
             echo "Error: $match has no content, aborting!\n";
             return false;
         }
-        self::report($message);
+        self::submitReport($spammer);
         return true;
     }
 
@@ -47,21 +49,38 @@ class SpamForce {
         preg_match("/To: (.+)/", $message, $to);
         preg_match("/Date: (.+)/", $message, $date);
         preg_match("/X-Spam-Status: (.+)/", $message, $status);
-        preg_match("/(Return-path:.*)/s", $message, $cut);
-        return $cut[1];
+        preg_match("/(Return-path:.*)/s", $message, $message);
+        $spammer          = new Spammer();
+        $spammer->from    = $from[1];
+        $spammer->to      = $to[1];
+        $spammer->date    = $date[1];
+        $spammer->status  = $status[1];
+        $spammer->message = $message[1];
+        return $spammer;
     }
 
-    static  function report($message)
+    static function submitReport($spammer)
     {
-        $spamcop = getenv('SPAMCOP_SUBMIT');
-        $from    = getenv('SPAMFORCE_FROM');
-        $cc      = getenv('SPAMFORCE_CC');
-        $headers = "From:$from\r\n";
-        if ($cc) {
-            $headers .= "Cc: $cc\r\n";
+        $spamcop_submit = getenv('SPAMCOP_SUBMIT');
+        $spamforce_from = getenv('SPAMFORCE_FROM');
+        $spamforce_cc   = getenv('SPAMFORCE_CC');
+        $headers        = "From:$spamforce_from\r\n";
+        if ($spamforce_cc) {
+            $headers .= "Cc: $spamforce_cc\r\n";
         }
-        mail($spamcop, "Reporting SPAM", $message, $headers);
+        $message = "Message body intentionally made blank";
+        mail($spamcop_submit,
+            "Reporting SPAM from {$spammer->from} to {$spammer->to} date {$spammer->date} status {$spammer->status}",
+            $message,
+            $headers);
     }
 
 }
 
+class Spammer
+{
+    public $from;
+    public $to;
+    public $date;
+    public $status;
+}

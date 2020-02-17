@@ -34,9 +34,10 @@ require_once 'vendor/autoload.php';
 
 use eugenevdm\Exim\SpamForce;
 
-SpamForce::run();
-
+$result = SpamForce::run();
 ```
+
+`$result` will report how many messages are in the queue and which ones were deleted.
 
 E. Create a cron job to run Spamforce every 5 minutes:
 
