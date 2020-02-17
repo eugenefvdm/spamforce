@@ -1,6 +1,6 @@
 <?php
 
-namespace eugenevdm;
+namespace eugenevdm\Exim;
 
 class SpamForce {
 
