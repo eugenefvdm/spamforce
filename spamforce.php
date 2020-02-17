@@ -1,4 +1,6 @@
 <?php
+
+require_once('vendor/autoload.php');
 // Get a list of all messages in the Exim queue
 $list    = "/usr/sbin/exim -bp";
 $subject = shell_exec("$list");
